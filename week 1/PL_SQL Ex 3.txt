@@ -1,0 +1,88 @@
+CREATE TABLE Accounts (
+    AccountID NUMBER PRIMARY KEY,
+    AccountType VARCHAR2(20),
+    Balance NUMBER
+);
+
+CREATE TABLE Employees (
+    EmployeeID NUMBER PRIMARY KEY,
+    EmployeeName VARCHAR2(50),
+    Department VARCHAR2(30),
+    Salary NUMBER
+);
+
+INSERT INTO Accounts VALUES (101, 'SAVINGS', 50000);
+INSERT INTO Accounts VALUES (102, 'SAVINGS', 30000);
+INSERT INTO Accounts VALUES (103, 'CURRENT', 40000);
+
+INSERT INTO Employees VALUES (1, 'John', 'IT', 50000);
+INSERT INTO Employees VALUES (2, 'Alice', 'IT', 60000);
+INSERT INTO Employees VALUES (3, 'Bob', 'HR', 45000);
+
+COMMIT;
+
+CREATE OR REPLACE PROCEDURE ProcessMonthlyInterest
+AS
+BEGIN
+    UPDATE Accounts
+    SET Balance = Balance * 1.01
+    WHERE AccountType = 'SAVINGS';
+
+    COMMIT;
+END;
+/
+
+EXEC ProcessMonthlyInterest;
+
+CREATE OR REPLACE PROCEDURE UpdateEmployeeBonus(
+    p_Department IN VARCHAR2,
+    p_BonusPercent IN NUMBER
+)
+AS
+BEGIN
+    UPDATE Employees
+    SET Salary = Salary + Salary * p_BonusPercent / 100
+    WHERE Department = p_Department;
+
+    COMMIT;
+END;
+/
+
+EXEC UpdateEmployeeBonus('IT',10);
+
+CREATE OR REPLACE PROCEDURE TransferFunds(
+    p_FromAccount IN NUMBER,
+    p_ToAccount IN NUMBER,
+    p_Amount IN NUMBER
+)
+AS
+    v_Balance NUMBER;
+BEGIN
+    SELECT Balance
+    INTO v_Balance
+    FROM Accounts
+    WHERE AccountID = p_FromAccount;
+
+    IF v_Balance >= p_Amount THEN
+        UPDATE Accounts
+        SET Balance = Balance - p_Amount
+        WHERE AccountID = p_FromAccount;
+
+        UPDATE Accounts
+        SET Balance = Balance + p_Amount
+        WHERE AccountID = p_ToAccount;
+
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('Transfer Successful');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Insufficient Balance');
+    END IF;
+END;
+/
+
+
+SET SERVEROUTPUT ON;
+EXEC TransferFunds(101,102,5000);
+
+SELECT * FROM Accounts;
+SELECT * FROM Employees;

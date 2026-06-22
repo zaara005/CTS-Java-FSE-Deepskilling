@@ -1,0 +1,94 @@
+package oose8;
+
+class Applicant {
+
+    private String username;
+    private String password;
+
+    public Applicant(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public boolean validateLogin(String uname, String pwd) {
+        return username.equals(uname) && password.equals(pwd);
+    }
+
+    // Creator Pattern
+    public Biodata createBiodata(String name, String degree, double percentage) {
+        return new Biodata(name, degree, percentage);
+    }
+}
+
+// -----------------------------------
+
+class Biodata {
+
+    private String name;
+    private String degree;
+    private double percentage;
+
+    public Biodata(String name, String degree, double percentage) {
+        this.name = name;
+        this.degree = degree;
+        this.percentage = percentage;
+    }
+
+    public double getPercentage() {
+        return percentage;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+// -----------------------------------
+
+class HR {
+
+    public boolean validateCandidate(Biodata biodata) {
+        return biodata.getPercentage() >= 60;
+    }
+}
+
+// -----------------------------------
+
+class Admin {
+
+    public Applicant register(String username, String password) {
+        return new Applicant(username, password);
+    }
+
+    public boolean processApplication(Applicant applicant, HR hr, Biodata biodata) {
+        return hr.validateCandidate(biodata);
+    }
+}
+
+// -----------------------------------
+
+public class ModifiedSystem {
+
+    public static void main(String[] args) {
+
+        Admin admin = new Admin();
+
+        // Registration
+        Applicant applicant = admin.register("Rahul", "123");
+
+        // Login
+        boolean loginStatus = applicant.validateLogin("Rahul", "123");
+
+        // Create Biodata
+        Biodata biodata = applicant.createBiodata("Rahul", "B.E", 70);
+
+        // Validation
+        HR hr = new HR();
+        boolean result = admin.processApplication(applicant, hr, biodata);
+
+        // Display (Implementation demonstration)
+        System.out.println("Login Successful: " + loginStatus);
+        System.out.println("Applicant Name: " + biodata.getName());
+        System.out.println("Application Approved: " + result);
+    }
+}
