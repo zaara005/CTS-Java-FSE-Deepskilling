@@ -1,4 +1,3 @@
-package oose8;
 
 class Applicant {
 
@@ -90,5 +89,54 @@ public class ModifiedSystem {
         System.out.println("Login Successful: " + loginStatus);
         System.out.println("Applicant Name: " + biodata.getName());
         System.out.println("Application Approved: " + result);
+    }
+}
+
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class ModifiedSystemTest {
+
+    Admin admin;
+    Applicant applicant;
+    Biodata biodata;
+    HR hr;
+
+    @Before
+    public void setUp() {
+        admin = new Admin();
+        applicant = admin.registerApplicant("zaara", "1234");
+        biodata = admin.createBiodata("Zaara", "B.E", 75);
+        hr = new HR();
+    }
+
+    @Test
+    public void testLoginSuccess() {
+        assertTrue(applicant.login("zaara", "1234"));
+    }
+
+    @Test
+    public void testLoginFailure() {
+        assertFalse(applicant.login("zaara", "wrong"));
+    }
+
+    @Test
+    public void testApplicationValidationPass() {
+        assertTrue(admin.submitApplication(hr, biodata));
+    }
+
+    @Test
+    public void testApplicationValidationFail() {
+        Biodata lowMarks = admin.createBiodata("Test", "B.E", 50);
+        assertFalse(admin.submitApplication(hr, lowMarks));
+    }
+
+    @Test
+    public void testObjectsNotNull() {
+        assertNotNull(admin);
+        assertNotNull(applicant);
+        assertNotNull(biodata);
+        assertNotNull(hr);
     }
 }

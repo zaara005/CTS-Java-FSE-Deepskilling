@@ -1,0 +1,13 @@
+Hands-on 4:  (theory)
+Difference between JPA, Hibernate and Spring Data JPA
+
+JPA:
+- Specification for object persistence.
+
+Hibernate:
+- ORM framework implementing JPA.
+
+Spring Data JPA:
+- Abstraction over JPA/Hibernate.
+- Reduces boilerplate code.
+- Provides JpaRepository and transaction management.
