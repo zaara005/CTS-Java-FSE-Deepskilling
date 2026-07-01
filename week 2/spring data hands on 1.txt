@@ -1,0 +1,139 @@
+**************mysql***************
+CREATE SCHEMA ormlearn;
+
+USE ormlearn;
+
+CREATE TABLE country(
+    code VARCHAR(2) PRIMARY KEY,
+    name VARCHAR(50)
+);
+
+INSERT INTO country VALUES('IN','India');
+INSERT INTO country VALUES('US','United States of America');
+
+
+************************************
+package com.cognizant.orm_learn;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name="country")
+public class Country {
+
+    @Id
+    @Column(name="code")
+    private String code;
+
+    @Column(name="name")
+    private String name;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return code + " " + name;
+    }
+}
+
+
+package com.cognizant.orm_learn;
+
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.cognizant.orm_learn.Country;
+
+@Repository
+public interface CountryRepository
+        extends JpaRepository<Country,String> {
+}
+
+
+package com.cognizant.orm_learn;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.cognizant.orm_learn.Country;
+import com.cognizant.orm_learn.CountryRepository;
+
+@Service
+public class CountryService {
+
+    @Autowired
+    private CountryRepository countryRepository;
+
+    @Transactional
+    public List<Country> getAllCountries() {
+        return countryRepository.findAll();
+    }
+}
+
+
+package com.cognizant.orm_learn;
+
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+
+import com.cognizant.orm_learn.Country;
+import com.cognizant.orm_learn.CountryService;
+
+@SpringBootApplication
+public class OrmLearnApplication {
+
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(OrmLearnApplication.class);
+
+    private static CountryService countryService;
+
+    public static void main(String[] args) {
+
+        ApplicationContext context =
+                SpringApplication.run(
+                        OrmLearnApplication.class,
+                        args);
+
+        countryService =
+                context.getBean(CountryService.class);
+
+        testGetAllCountries();
+
+        LOGGER.info("Inside main");
+    }
+
+    private static void testGetAllCountries() {
+
+        LOGGER.info("Start");
+
+        List<Country> countries =
+                countryService.getAllCountries();
+
+        LOGGER.info(countries.toString());
+
+        LOGGER.info("End");
+    }
+}
