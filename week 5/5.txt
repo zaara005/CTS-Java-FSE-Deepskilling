@@ -1,0 +1,60 @@
+*************CohortDetails.js*************
+
+import styles from './CohortDetails.module.css';
+
+function CohortDetails(props) {
+
+    const headingStyle =
+        props.cohort.currentStatus.toLowerCase() === "ongoing"
+            ? styles.ongoing
+            : styles.completed;
+
+    return (
+        <div className={styles.box}>
+            <h3 className={headingStyle}>
+                {props.cohort.cohortCode} -
+                <span>{props.cohort.technology}</span>
+            </h3>
+
+            <dl>
+                <dt>Started On</dt>
+                <dd>{props.cohort.startDate}</dd>
+
+                <dt>Current Status</dt>
+                <dd>{props.cohort.currentStatus}</dd>
+
+                <dt>Coach</dt>
+                <dd>{props.cohort.coachName}</dd>
+
+                <dt>Trainer</dt>
+                <dd>{props.cohort.trainerName}</dd>
+            </dl>
+        </div>
+    );
+}
+
+export default CohortDetails;
+
+
+
+*************CohortDetails.module.css*************
+.box{
+    width:300px;
+    display:inline-block;
+    margin:10px;
+    padding:10px 20px;
+    border:1px solid black;
+    border-radius:10px;
+}
+
+dt{
+    font-weight:500;
+}
+
+.ongoing{
+    color:green;
+}
+
+.completed{
+    color:blue;
+}
